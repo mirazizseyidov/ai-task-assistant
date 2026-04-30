@@ -1,4 +1,4 @@
-from agent import FinanceAgent
+from .agent import FinanceAgent
 
 def main():
     agent = FinanceAgent()
