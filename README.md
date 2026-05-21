@@ -1,51 +1,42 @@
-# AI Finance Assistant
+# AI-Powered Task Assistant (CLI v1.0)
 
-An intelligent agent that processes natural language financial inputs and uses tools to convert them into a unified currency.
-
-## How to Run
-1. **Clone the repo:** `git clone https://github.com/mirazizseyidov/ai-task-assistant.git`
-2. **Install dependencies:** `pip install -r requirements.txt`
-3. **Run the program:** `python src/main.py`
-4. **Run tests:** `python tests/test_system.py`
+This is a Python-based command-line tool designed to help manage software development tasks. It uses an AI agent (built with the Google GenAI SDK) that can automatically understand user requests and use local Python functions (tools) to calculate project metrics and save reports to text files.
 
 ---
 
-## Project Journal
+## Project Development Journal
 
-### Step 1 – 24.04 (Initial Design)
-- **Goal:** Develop an AI-based agent that automates currency conversion for expense tracking.
-- **Tools:** `get_exchange_rate` and `calculate_expense`.
-- **Approach:** Modular Python system using regex for entity extraction.
+### Step 1 – 24.04 (Initial Idea)
+* **Goal:** Create a simple tool to help developers estimate task deadlines and generate basic report files without doing the manual math.
+* **AI Approach:** I planned to use a basic prompt setup where the user types a request, and the AI extracts the information.
+* **Planned Tools:** A calculator function for estimating hours and a file writer function to save reports.
+* **Concepts Needed:** Functions, basic string parsing, and file handling in Python.
 
-### Step 2 – 08.05 (Implementation)
-- **Status:** Core logic and folder structure completed.
-- **Concepts Applied:** 
-    - **OOP:** Encapsulated logic within the `FinanceAgent` class.
-    - **Modularity:** Separated code into `tools.py`, `agent.py`, and `main.py`.
-    - **Regex:** Used for pattern matching to extract numerical data and currency codes.
+### Step 2 – 08.05 (Implementation Progress)
+* **What I actually did:** I upgraded the project to use the official `google-genai` SDK and the `gemini-2.5-flash` model. Instead of parsing text manually, I used the model's native Tool Calling feature (`automatic_function_calling`).
+* **Concepts Used:** I used Object-Oriented Programming (OOP) to build the agent class, type hints, and Python docstrings. The docstrings are very important because Gemini reads them to understand what the tools do and how to use them.
 
-### Step 3 – 15.05 (Testing & Data Conversion)
-- **Testing Process:** Performed functional testing of the main workflow and tools using `tests/test_system.py`.
-- **Test Scenarios:**
-    1. **Scenario:** User inputs "I spent 100 USD". 
-       - **Expected:** "100 USD. In RUB: 9250.0". 
-       - **Result:** PASSED.
-    2. **Scenario:** User inputs "Lunch 20 EUR". 
-       - **Expected:** "20 EUR. In RUB: 2000.0". 
-       - **Result:** PASSED.
-    3. **Scenario:** Invalid text input. 
-       - **Expected:** Error handling message. 
-       - **Result:** PASSED.
+### Step 3 – 15.05 (Testing and Data Handling)
+* **Testing Process:** I wrote automated unit tests using Python’s built-in `unittest` framework to check the tools locally without making real API calls every time.
+* **Scenarios Tested:** I verified that the calculator handles different task difficulties correctly, checked how it responds to invalid input strings, and ensured files are created and cleaned up properly.
+* **Data Conversion:** When a user types a request like *"10 hours, hard task"*, the AI converts that unstructured text into clean data types (integers and strings), sends them to the Python functions, and formats the output back into an easy-to-read response.
 
-## Data Porting and Conversion
-The system ensures data consistency by transforming unstructured input into structured types:
-1. **Input:** Raw user string (e.g., "50 USD").
-2. **Extraction:** The Agent uses `re.search` to extract the amount and currency code.
-3. **Conversion:** The amount string is cast to `float`, and the currency string is normalized to uppercase.
-4. **Consistency:** These typed variables are passed to the tools to ensure mathematical accuracy.
+### Final Submission – 22.05 (Final Synthesis)
+* **Final System:** The system is now fully complete and working as an interactive CLI application.
+* **Conclusions:** The tests pass successfully, proving that the local tools work reliably. The AI does a great job acting as the coordinator between the user input and the backend functions.
+* **Deployment Strategy:** Right now, the application runs locally in the terminal as a CLI tool. If I were to deploy this into production in the future, I would wrap the Python code in a web API using FastAPI and package it inside a Docker container so it could easily connect to a front-end website or a Discord/Telegram bot.
 
-## System Deployment Strategy
-The chosen deployment strategy for this software is a **Local Command-Line Tool**.
-- **Reasoning:** This allows for safe, local testing of the agent's logic without external server dependencies.
-- **Setup:** Users can run the system by installing dependencies from `requirements.txt` and executing the `main.py` script.
-- **Future Scale:** The modular architecture allows for easy migration to a Web Service (API) or a Chatbot interface.
+---
+
+## Project Structure
+
+```text
+ai-task-assistant/
+│
+├── agent.py            # Sets up the Gemini AI model and registers the tools
+├── tools.py            # The actual Python functions (calculator, file saver)
+├── main.py             # The main terminal loop for user interaction
+├── requirements.txt    # External libraries needed (google-genai, python-dotenv)
+├── .env.example        # A template showing where to put your Gemini API key
+└── tests/
+    └── test_system.py  # Unit tests to verify the tools work correctly
