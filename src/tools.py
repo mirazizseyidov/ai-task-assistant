@@ -1,6 +1,17 @@
+"""
+This module defines the external utilities (tools) that the AI Agent 
+can execute autonomously to resolve user tasks.
+"""
 import os
 
 def calculate_project_metrics(base_hours: int, complexity: str) -> str:
+    """
+    Calculates estimated delivery time and risk assessment for a development task.
+
+    Args:
+        base_hours: The baseline estimate of hours required for a standard task.
+        complexity: The difficulty tier of the task. Must be 'easy', 'medium', or 'hard'.
+    """
     multipliers = {
         "easy": 1.0,
         "medium": 1.5,
@@ -19,8 +30,14 @@ def calculate_project_metrics(base_hours: int, complexity: str) -> str:
 
 
 def save_summary_file(filename: str, report_content: str) -> str:
+    """
+    Saves the final generated technical analysis or report into a local text file.
+
+    Args:
+        filename: The desired name or path of the file (e.g., 'report.txt').
+        report_content: The structural textual analysis to be written down.
+    """
     try:
-        # Standardizing extension
         if not filename.endswith('.txt'):
             filename += '.txt'
             
