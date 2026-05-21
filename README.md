@@ -7,10 +7,22 @@ This is a Python-based command-line tool designed to help manage software develo
 ## Project Development Journal
 
 ### Step 1 – 24.04 (Initial Idea)
-* **Goal:** Create a simple tool to help developers estimate task deadlines and generate basic report files without doing the manual math.
-* **AI Approach:** I planned to use a basic prompt setup where the user types a request, and the AI extracts the information.
-* **Planned Tools:** A calculator function for estimating hours and a file writer function to save reports.
-* **Concepts Needed:** Functions, basic string parsing, and file handling in Python.
+Goal
+Create a simple AI-assisted tool that helps developers estimate task deadlines and automatically generate basic report files without performing manual calculations.
+AI Approach
+The system uses a lightweight prompt-based AI approach where the user enters a natural language request, and the AI extracts important information such as task name, estimated hours, and difficulty level.
+Planned Tools
+Calculator Function — used for estimating working hours and calculating approximate deadlines.
+File Writer Function — used for automatically generating and saving report files in formats such as .txt or .md.
+Concepts Needed
+The project is based on several core Python programming concepts:
+Functions
+Basic string parsing
+File handling
+Simple automation logic
+Natural language input processing
+Expected Result
+The final system should allow users to quickly enter task descriptions, automatically calculate estimated completion times, and generate structured reports with minimal manual work
 
 ### Step 2 – 08.05 (Implementation Progress)
 * **What I actually did:** I upgraded the project to use the official `google-genai` SDK and the `gemini-2.5-flash` model. Instead of parsing text manually, I used the model's native Tool Calling feature (`automatic_function_calling`).
