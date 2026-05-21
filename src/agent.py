@@ -1,23 +1,46 @@
-import re
-from .tools import calculate_expense
+"""
+Handles the initialization of the Gemini model and registers the Python tools 
+for autonomous execution via automatic function calling.
+"""
+import os
+from google import genai
+from google.genai import types
+import tools
 
-class FinanceAgent:
+class AITaskAssistant:
     def __init__(self):
-        self.name = "SmartFinance"
+        self.client = genai.Client()
+        self.model_identity = "gemini-2.5-flash"
+        
+        self.registered_tools = [
+            tools.calculate_project_metrics, 
+            tools.save_summary_file
+        ]
+        
+        self.system_instruction = (
+            "You are an advanced Project Management AI Agent. Your role is to assist software teams "
+            "by parsing complex user requests, analyzing tasks, evaluating technical risks, and saving logs.\n"
+            "CRITICAL: You have access to local Python tools. Whenever a user asks to calculate metrics or "
+            "save a file, you MUST use the corresponding tool instead of guessing or simulating the outcome."
+        )
 
-    def process_request(self, user_input: str):
-        # Имитация "размышления" (Reasoning)
-        print(f"[{self.name}]: Анализирую запрос: '{user_input}'...")
+    def process_request(self, user_prompt: str) -> str:
+        """
+        Processes user text. If Gemini flags a tool call, the SDK handles the execution 
+        locally and loops the result back into the model context transparently.
+        """
+        config = types.GenerateContentConfig(
+            system_instruction=self.system_instruction,
+            tools=self.registered_tools,
+            temperature=0.2,
+        )
         
-        # Регулярное выражение для поиска трат типа "100 USD" или "50 EUR"
-        match = re.search(r"(\d+)\s+([A-Z]{3})", user_input.upper())
-        
-        if match:
-            amount = float(match.group(1))
-            currency = match.group(2)
-            
-            # Агент "решает" вызвать инструмент
-            result_rub = calculate_expense(amount, currency)
-            return f"Я распознал трату: {amount} {currency}. В рублях это будет: {result_rub} руб."
-        else:
-            return "Извините, я не нашел данных о сумме и валюте в формате '100 USD'."
+        try:
+            response = self.client.models.generate_content(
+                model=self.model_identity,
+                contents=user_prompt,
+                config=config
+            )
+            return response.text
+        except Exception as error:
+            return f"System Runtime Exception: Connection/Execution error occurred: {str(error)}"
