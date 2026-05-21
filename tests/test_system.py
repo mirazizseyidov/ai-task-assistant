@@ -1,13 +1,40 @@
-import sys
-import os
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../src')))
+"""
+Automated unit testing architecture to validate correct system input processing, 
+boundary values, and error-handling routines.
+"""
+import unittest
+import tools
 
-from tools import calculate_expense
+class TestTaskAssistantCore(unittest.TestCase):
 
-def test_calculation():
-    # Проверяем, что 10 USD правильно переводятся (10 * 92.5 = 925)
-    assert calculate_expense(10, "USD") == 925.0
-    print("Тест на расчет пройден!")
+    def test_metrics_calculation_valid_easy(self):
+        """Verify metric execution with clean lower-bound inputs."""
+        result = tools.calculate_project_metrics(10, "easy")
+        self.assertIn("Calculated Duration = 10.0 hours", result)
+        self.assertIn("Risk Assessment = Low to Moderate", result)
+
+    def test_metrics_calculation_valid_hard(self):
+        """Verify multiplier evaluation on high complexity tasks."""
+        result = tools.calculate_project_metrics(10, "hard")
+        self.assertIn("Calculated Duration = 25.0 hours", result)
+        self.assertIn("Risk Assessment = High", result)
+
+    def test_metrics_invalid_complexity(self):
+        """Assert system safety boundary guards when arbitrary string inputs are inserted."""
+        result = tools.calculate_project_metrics(10, "super_hard")
+        self.assertTrue(result.startswith("Error:"))
+
+    def test_file_saving_mechanism(self):
+        """Assert storage module creates physical payloads safely and wipes out cleanly."""
+        test_file = "test_run_output.txt"
+        test_payload = "System Verification Context Run"
+        
+        result = tools.save_summary_file(test_file, test_payload)
+        self.assertTrue(result.startswith("Success:"))
+   
+        if os.path.exists(test_file):
+            os.remove(test_file)
 
 if __name__ == "__main__":
-    test_calculation()
+    import os
+    unittest.main()
